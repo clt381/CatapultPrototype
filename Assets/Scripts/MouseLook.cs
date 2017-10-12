@@ -8,14 +8,15 @@ public class MouseLook : MonoBehaviour {
     float verticalRotation = 0f;    //store vertical mouse eulerangle for x axis
     public bool mouseLook = false;
     public bool mouseRotateAround = true;
+    public Transform defaultCameraPosition; //where the camera should default to when moving
 
-	// Use this for initialization
-	void Start () {
+    // Use this for initialization
+    void Start() {
         movementScript = GetComponent<GetAxisMovement>();
-	}
-	
-	// Update is called once per frame
-	void Update () {
+    }
+
+    // Update is called once per frame
+    void Update() {
 
         float mouseSensitivity = 30f;
         float mouseX = Input.GetAxis("Mouse X");
@@ -44,11 +45,31 @@ public class MouseLook : MonoBehaviour {
             }
         }
 
+        ReturnToDefaultPosition();
+
         if (mouseRotateAround)
         {
             //setting this to look at cameramanager instead of player object prevents stuttering but and camera moving away
             transform.LookAt(transform.parent);     //always look at parent object camera manager
             transform.Rotate(0f, mouseX, 0f);
         }
-	}
+
+        
+    }
+
+    void ReturnToDefaultPosition()
+    {
+        //to override mouselook camera control with directional key movement camera control
+        if (Input.GetAxis("Horizontal") != 0 || Input.GetAxis("Vertical") != 0)     //if there is any movement
+        {
+            mouseRotateAround = false;      //disable mouselook movement
+            Transform curCameraPosition = GetComponentInChildren<Camera>().gameObject.transform;
+            curCameraPosition.position = defaultCameraPosition.position;
+            curCameraPosition.rotation = defaultCameraPosition.rotation;
+        }
+        else
+        {
+            mouseRotateAround = true;
+        }
+    }
 }

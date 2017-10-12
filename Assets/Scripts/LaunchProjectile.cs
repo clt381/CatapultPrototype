@@ -23,6 +23,13 @@ public class LaunchProjectile : MonoBehaviour {
     public GameObject Projectile;
     public GameObject TrailBall;
 
+    CameraManager cameraManager;
+
+    void Start()
+    {
+        cameraManager = GetComponent<CameraManager>();
+    }
+
 	void Update () {
 
         CalculateLaunch();
@@ -53,7 +60,7 @@ public class LaunchProjectile : MonoBehaviour {
             
         }
 
-        TrajectoryTrail();
+        //TrajectoryTrail();
 	}
 
     void CalculateLaunch()
@@ -92,6 +99,8 @@ public class LaunchProjectile : MonoBehaviour {
         Rigidbody rb = projectileClone.GetComponent<Rigidbody>();
         rb.AddRelativeForce(0, 0, launchForce, ForceMode.Impulse);        //so force is applied in the rigidbody's local direction
         //NOTE: make sure to use addrelativeforce instead of transform.TransformDirection
+        cameraManager.followBallCamera = projectileClone.GetComponentInChildren<Camera>();
+        cameraManager.FollowBallCamera();
     }
 
     void TrajectoryTrail()
