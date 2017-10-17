@@ -22,13 +22,12 @@ public class CameraManager : MonoBehaviour {
 
     //to return to default camera
     public void DefaultCamera()
-    {
-        defaultCamera.enabled = true;
+    {    
         foreach (Camera camera in rotateCameras)        //disable all cameras in rotatecameras array
         {
             camera.enabled = false;
         }
-
+        defaultCamera.enabled = true;
     }
 
     //to go to rotate camera after ball has hit target

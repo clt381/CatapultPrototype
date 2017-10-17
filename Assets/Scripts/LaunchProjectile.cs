@@ -21,13 +21,17 @@ public class LaunchProjectile : MonoBehaviour {
 
     public Transform launchPoint;
     public GameObject Projectile;
-    public GameObject TrailBall;
 
+    //getting camera manager script and catapult animator
+    CameraShake cameraShake;
     CameraManager cameraManager;
+    Animator catapultAnimator;
 
     void Start()
     {
+        cameraShake = GetComponent<CameraShake>();
         cameraManager = GetComponent<CameraManager>();
+        catapultAnimator = GetComponentInChildren<Animator>();
     }
 
 	void Update () {
@@ -41,14 +45,16 @@ public class LaunchProjectile : MonoBehaviour {
                 launchForce = calculatedForce;
                 calculatedForce = 0;        //reseting calculated force for next calculation
                 //ADD catapult firing animation here
-                FireProjectile();
+                catapultAnimator.SetTrigger("Fire");
+                StartCoroutine(WaitBeforeLaunching(0.2f));
             }
             else if (calculatedForce > minLaunchForce && calculatedForce > maxLaunchForce)
             {
                 launchForce = maxLaunchForce;
                 calculatedForce = 0;        //reseting calculated force for next calculation
                 //ADD catapult firing animation here
-                FireProjectile();
+                catapultAnimator.SetTrigger("Fire");
+                StartCoroutine(WaitBeforeLaunching(0.2f));
             }
             else if (calculatedForce < minLaunchForce)
             {
@@ -56,8 +62,11 @@ public class LaunchProjectile : MonoBehaviour {
                 calculatedForce = 0;
             }
 
-            Debug.Log(launchForce);
-            
+            //reset loading animation bool
+            catapultAnimator.SetBool("Loading", false);
+
+            //Debug.Log(launchForce);
+
         }
 
         //TrajectoryTrail();
@@ -71,6 +80,8 @@ public class LaunchProjectile : MonoBehaviour {
                 isLoading = true;
                 calculatedForce += launchIncreaseSpeed * Time.deltaTime;         //increase launch force by launch increase speed per second
                                                                                  //ADD catapult loading up animation here
+            //loading catapult animation
+            catapultAnimator.SetBool("Loading", true);
             }
             else
             {
@@ -103,9 +114,10 @@ public class LaunchProjectile : MonoBehaviour {
         cameraManager.FollowBallCamera();
     }
 
-    void TrajectoryTrail()
+    //call coroutine when launching so player can see firing animation to completion
+    IEnumerator WaitBeforeLaunching(float time)
     {
-        GameObject trailClone = Instantiate(TrailBall, launchPoint.position, launchPoint.rotation) as GameObject;
-
+        yield return new WaitForSecondsRealtime(time);
+        FireProjectile();
     }
 }

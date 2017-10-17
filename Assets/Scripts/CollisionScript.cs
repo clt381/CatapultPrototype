@@ -8,11 +8,18 @@ public class CollisionScript : MonoBehaviour {
     GameObject catapult;
     public RotateAround rotateScript;
     bool hit;       //to prevent one prefab from triggering multiple camera cuts
+    bool canExit;
 
     void Start()
     {
         catapult = GameObject.FindGameObjectWithTag("Player");      //finding the cameramanager script on the player
         cameraManager = catapult.GetComponent<CameraManager>();
+        canExit = true;
+    }
+
+    void Update()
+    {
+        OnClickExit();
     }
 
     void OnCollisionEnter(Collision coll)
@@ -55,6 +62,19 @@ public class CollisionScript : MonoBehaviour {
                 Debug.Log("I hit the ground");
                 hit = true;
                 cameraManager.DefaultCamera();
+            }
+        }
+    }
+
+    void OnClickExit()
+    {
+        if (canExit)
+        {
+            if (Input.GetKeyUp(KeyCode.Mouse0))
+            {
+                canExit = false;
+                Camera camera = GetComponentInChildren<Camera>();
+                camera.enabled = false;
             }
         }
     }

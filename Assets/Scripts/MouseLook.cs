@@ -66,6 +66,8 @@ public class MouseLook : MonoBehaviour {
             Transform curCameraPosition = GetComponentInChildren<Camera>().gameObject.transform;
             curCameraPosition.position = defaultCameraPosition.position;
             curCameraPosition.rotation = defaultCameraPosition.rotation;
+
+
         }
         else
         {
